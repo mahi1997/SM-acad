@@ -35,6 +35,12 @@ class IntervalTree{
         void search(node *,interval *);
         void display( node *,int);
         
+        //void delet(node *,interval *);
+        void deleteNode(node *,interval *);
+        void deletefix(node *);
+        node* nextbigAfterParentOf(node *);
+        
+        
 };
 
 //--------------------------------------------insert function--------------------------------------------------
@@ -275,7 +281,7 @@ void IntervalTree::rightrotate(node *currentnode)
 ///----------------------------------------------------------------------------------------------------------
 //display tree
 void IntervalTree::display(node *r,int level)
-{
+{ 
      if(root==NULL)
      {
           cout<<"\nEmpty IntervalTree."<<endl;
@@ -328,30 +334,294 @@ void IntervalTree::search(node *nnode,interval *searchI){
 
 
 //------------------------------------------------------------------------------------------------------------
+///--------------------------DELETEION ---------------------------------------------------------------------
+
+/*void IntervalTree::delet(node* r,interval *d){
+	
+	interval *i=new interval();
+     i->low=d->low;
+     i->high=d->high;
+     
+	if(r==NULL){
+		cout<<"Sorry..No such interval found"<<endl;
+		return;
+	}else{
+		if((i->low==r->I->low)&&(i->high==r->I->high)){
+			deleteNode(r);
+		}
+		else{
+			if(r->left->max<i->low)
+			delet(r->right,i);
+			else
+			delet(r->left,i);
+		}
+		
+	}
+}
+*/
+//------------------------------------------------
+//delete node and maintan interval tree
+void IntervalTree::deleteNode(node *p,interval *d)
+{   interval *i=new interval();
+     i->low=d->low;
+     i->high=d->high;
+    //-----------------------------
+    if(root==NULL)
+     {
+           cout<<"\nEmpty Tree." ;
+           return ;
+     }
+     
+    
+     int found=0;
+     while(p!=NULL&&found==0)
+     {
+           if(p->I->low==i->low &&p->I->high==i->high)
+               {found=1;
+               
+               }
+           if(found==0)
+           {
+                 if(p->left->max<i->low) p=p->right;
+                 else
+                    p=p->left;
+           }
+     }
+     if(found==0)
+     {
+            cout<<"\nElement Not Found.";
+            return ;
+     }
+	
+	//------------------------ 
+    else{
+    	
+    node *T1,*T2;
+    cout<<"Deleted node interval: ("<<p->I->low<<","<<p->I->high<<") color: "<<p->color<<endl;
+         
+       if(p->left==NULL||p->right==NULL) //p has atmost one child      
+		      T1=p;                                                       
+         else
+              { 
+              T1=nextbigAfterParentOf(p);//two child case
+			      //eigther biggest from left of subtree or smallest from right of subtree with node p                       
+                   //this node will be swapped with deleting node in two child case
+                   
+				   }
+		 if(T1->left!=NULL)
+              T2=T1->left;
+         else
+         { 
+              if(T1->right!=NULL)
+                   T2=T1->right;
+              else
+                   T2=NULL;
+         }
+         
+         if(T2!=NULL)              //only single chid case
+             {
+              T2->parent=T1->parent;
+			  }
+              
+         if(T1->parent==NULL)   // deleting node is root
+              {root=T2;
+              //--------
+              if(T2->left!=NULL){
+              	T2->max=(T2->max>T2->left->max)?T2->max:T2->left->max;
+              }
+              if(T2->right!=NULL){
+              	T2->max=(T2->max>T2->right->max)?T2->max:T2->right->max;
+              }
+              //--------
+              }
+         else
+         {
+             if(T1==T1->parent->left)
+                {
+                T1->parent->left=T2;}
+             else
+                T1->parent->right=T2;
+         }
+         if(T1!=p)  //in case of two child 
+         {
+             p->color=T1->color;
+             p->I=T1->I;  //swaping nodes
+             p->max=(p->left->max>p->right->max)?p->left->max:p->right->max;
+             if(T1->parent->left==T1)
+             T1->parent->left=NULL;
+             T1->parent=NULL;
+             
+             
+         }
+         if(T1->color=='b')  
+             {
+             deletefix(T2);}
+         }
+    
+}
+//------------------------------------------------------------------------
+node* IntervalTree::nextbigAfterParentOf(node *p)
+{
+      node *y=NULL;
+     if(p->left!=NULL)
+     { //get maximum of left subtree
+         y=p->left;
+         while(y->right!=NULL)
+              y=y->right;
+     }
+     else
+     {//get smallest of right subtree
+         y=p->right;
+         while(y->left!=NULL)
+              y=y->left;
+     }
+     return y;
+}
+//-----------------------------------------------------------------------------
+//delete fix
+void IntervalTree::deletefix(node *p)
+{
+    node *s;
+    while(p!=root&&p->color=='b')  //p is black
+    {
+          if(p->parent->left==p)  // p is in left of its parent
+          {
+                  s=p->parent->right;  //sibling
+                  if(s->color=='r')     //red sibling
+                  {
+                         s->color='b';
+                         p->parent->color='r';
+                         leftrotate(p->parent);
+                         s=p->parent->right;  //s is in right of prior s
+                  }
+                  if(s->right->color=='b'&&s->left->color=='b')
+                  {
+                         s->color='r';
+                         p=p->parent;  //prior s
+                  }
+                  else
+                  {
+                      if(s->right->color=='b')
+                      {
+                             s->left->color=='b';
+                             s->color='r';
+                             rightrotate(s);
+                             s=p->parent->right;
+                      }
+                      s->color=p->parent->color;
+                      p->parent->color='b';
+                      s->right->color='b';
+                      leftrotate(p->parent);
+                      p=root;
+                  }
+          }
+          else
+          {
+                  s=p->parent->left;
+                  if(s->color=='r')
+                  {
+                        s->color='b';
+                        p->parent->color='r';
+                        rightrotate(p->parent);
+                        s=p->parent->left;
+                  }
+                  if(s->left->color=='b'&&s->right->color=='b')
+                  {
+                        s->color='r';
+                        p=p->parent;
+                  }
+                  else
+                  {
+                        if(s->left->color=='b')
+                        {
+                              s->right->color='b';
+                              s->color='r';
+                              leftrotate(s);
+                              s=p->parent->left;
+                        }
+                        s->color=p->parent->color;
+                        p->parent->color='b';
+                        s->left->color='b';
+                        rightrotate(p->parent);
+                        p=root;
+                  }
+          }
+       p->color='b';
+       root->color='b';
+    }
+}
 
 //----------------------------------------------------------------------------------------------------------
 int main(){
 	IntervalTree IT;
+	cout<<"-----------------------WELCOME TO INTERVAL TREE ------------------"<<endl;
 	
-	for(int i=0;i<6;i++){
-		int l,h;
-		cin>>l>>h;
-		interval *inter=newinterval(l,h);
-		//inter->low=l;
-		//inter->high=h;
-		node *n=new node();
-		IT.insert(n,inter);
-	}
-	IT.display(IT.root,0);
-	interval *i1,*i2,*i3,*i4;
-	i1=newinterval(14,16);
-	i2=newinterval(21,23);
-	i3=newinterval(0,4);
-	i4=newinterval(100 ,200);
-	IT.search(IT.root,i1);
-	IT.search(IT.root,i2);
-	IT.search(IT.root,i3);
-	IT.search(IT.root,i4);
-	
+	//--------------------
+	 while(true)
+    {
+        cout<<"Enter: \n1..Test Sample data set of problem \n Check randomly \n2..insert node\n3.search node \n4.delete \n5..print the interval tree\n6..exit\n";
+        int option; 
+		cin>>option;
+        if(option==1)
+        {cout<<"inserting {15, 20}, {10, 30}, {17, 19},{5, 20}, {12, 15}, {30, 40} -"<<endl;
+        interval *i1=newinterval(15,20); node *n1=new node();
+        interval *i2=newinterval(10,30); node *n2=new node();
+        interval *i3=newinterval(17,19); node *n3=new node();
+        interval *i4=newinterval(5,20);  node *n4=new node();
+        interval *i5=newinterval(12,15); node *n5=new node();
+        interval *i6=newinterval(30,40); node *n6=new node();
+        
+            IT.insert(n1,i1);
+            IT.insert(n2,i2);
+            IT.insert(n3,i3);
+            IT.insert(n4,i4);
+            IT.insert(n5,i5);
+            IT.insert(n6,i6);
+            IT.display(IT.root,0);
+            cout<<"searching query {14,16}, {21,23}"<<endl;
+            interval *i7=newinterval(14,16);
+            interval *i8=newinterval(21,23);
+            IT.search(IT.root,i7);
+            IT.search(IT.root,i8);
+            cout<<"deleting {5,20}"<<endl;
+            IT.deleteNode(IT.root,i4);
+            IT.display(IT.root,0);
+            
+            
+        }
+        else if(option==2)
+        { int n;
+           cout<<"Enter number of node that you have to insert"<<endl;
+           cin>>n;
+           cout<<"now enter your intervals"<<endl;
+           for(int i=0;i<n;i++){
+           	int l,h;
+           	cin>>l>>h;
+           	node *n=new node();
+           	interval *inter=newinterval(l,h);
+           	IT.insert(n,inter);
+           }
+        }
+        else if(option==3)
+        { int l,h;
+		cout<<"Enter your query interval"<<endl;
+        cin>>l>>h;
+        interval *query=newinterval(l,h);
+        IT.search(IT.root,query);
+        }
+        else if(option==4)
+        { 
+        IT.display(IT.root,0);
+        }
+        else if(option==5)
+        { 	int l,h;
+        cout<<"Enter your interval that has to be delted"<<endl;
+           	cin>>l>>h;
+           	interval *inter=newinterval(l,h);
+        IT.deleteNode(IT.root,inter);
+        }
+        else     if(option==6)break;
+    }
+	//-----------------------
 	return 0;
 }
