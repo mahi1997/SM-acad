@@ -32,11 +32,11 @@ class IntervalTree{
 		void insertfix(node *);
         void leftrotate(node *);
         void rightrotate(node *);
-        
+        void search(node *,interval *);
         void display( node *,int);
 };
 
-//insert function
+//--------------------------------------------insert function--------------------------------------------------
 void IntervalTree::insert(node *nnode,interval *newI)
 {  
    
@@ -213,7 +213,7 @@ void IntervalTree::rightrotate(node *currentnode)
      }
 }
 
-///-----------------
+///----------------------------------------------------------------------------------------------------------
 //display tree
 void IntervalTree::display(node *r,int level)
 {
@@ -230,11 +230,48 @@ void IntervalTree::display(node *r,int level)
 	 display(r->right,level+1);
      }
 }
-//-------------
+
+//-------------------------------SEARCH (NODE, INTERVAL)---------------------------------------
+void IntervalTree::search(node *nnode,interval *searchI){
+	//cout<<searchI->low<<","<<searchI->high<<endl;
+	 interval *i=new interval();
+     i->low=searchI->low;
+     i->high=searchI->high;
+	if(nnode==NULL)
+	{
+	cout<<"No overlapping interval found"<<endl;
+	return;}
+	else{if(nnode->left!=NULL){
+	     // node in left
+		if(nnode->left->max<i->low){
+			//not overlap  in left of subtree
+			if(i->low<=nnode->I->high&&i->high>=nnode->I->low){
+				cout<<"overlap with interval ("<<nnode->I->low<<","<<nnode->I->high<<")"<<endl;
+			}
+			else
+			search(nnode->right,i);//go to right of tree
+		}
+		else{
+			//go to left of tree
+			search(nnode->left,i);
+		}
+	}else{
+		//no left subtree
+		if(i->low<=nnode->I->high&&i->high>=nnode->I->low){
+				cout<<"overlap with interval ("<<nnode->I->low<<","<<nnode->I->high<<")"<<endl;
+			}
+			else
+			search(nnode->right,i);//go to right of tree
+	}
+	
+	}
+}
+
+//------------------------------------------------------------------------------------------------------------
 int main(){
 	IntervalTree IT;
 	
-	for(int i=0;i<5;i++){
+	for(int i=0;i<6;i++){
 		int l,h;
 		cin>>l>>h;
 		interval *inter=newinterval(l,h);
@@ -244,5 +281,14 @@ int main(){
 		IT.insert(n,inter);
 	}
 	IT.display(IT.root,0);
+	interval *i1,*i2,*i3,*i4;
+	i1=newinterval(14,16);
+	i2=newinterval(21,23);
+	i3=newinterval(0,4);
+	i4=newinterval(100 ,200);
+	IT.search(IT.root,i1);
+	IT.search(IT.root,i2);
+	IT.search(IT.root,i3);
+	IT.search(IT.root,i4);
 	return 0;
 }
