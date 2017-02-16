@@ -610,15 +610,15 @@ int main(){
         IT.search(IT.root,query);
         }
         else if(option==4)
-        { 
-        IT.display(IT.root,0);
-        }
-        else if(option==5)
-        { 	int l,h;
+        { int l,h;
         cout<<"Enter your interval that has to be delted"<<endl;
            	cin>>l>>h;
            	interval *inter=newinterval(l,h);
         IT.deleteNode(IT.root,inter);
+        
+        }
+        else if(option==5)
+        { 	IT.display(IT.root,0);
         }
         else     if(option==6)break;
     }
