@@ -34,6 +34,7 @@ class IntervalTree{
         void rightrotate(node *);
         void search(node *,interval *);
         void display( node *,int);
+        
 };
 
 //--------------------------------------------insert function--------------------------------------------------
@@ -163,13 +164,43 @@ void IntervalTree::leftrotate(node *currentnode)
            {
                   currentnode->right=Tnode->left;
                   Tnode->left->parent=currentnode;
+                  //--------
+                  if(Tnode->left->max>Tnode->max)
+                  {if(Tnode->right!=NULL)
+                  Tnode->max=(Tnode->I->high>Tnode->right->max)?Tnode->I->high:Tnode->right->max;
+				  else
+				  Tnode->max=Tnode->I->high;
+				  }
+                    //------------       
            }
            else
+                  {
                   currentnode->right=NULL;
+                  //-------------
+				  if(Tnode->max>currentnode->max){
+				  	if(currentnode->left!=NULL)
+				  	currentnode->max=(currentnode->I->high>currentnode->left->max)?currentnode->I->high:currentnode->left->max;
+				  	else
+				  	currentnode->max=currentnode->I->high;
+				  }
+				  //------
+				  }
+				  
+				  
            if(currentnode->parent!=NULL)
+                {
                 Tnode->parent=currentnode->parent;
+				//-----
+				if(Tnode->max>currentnode->max){
+					if(Tnode->max>currentnode->parent->max)
+					currentnode->parent->max=Tnode->max;
+				}
+				//----
+				}
            if(currentnode->parent==NULL)
+                {
                 root=Tnode;
+				}
            else
            {
                if(currentnode==currentnode->parent->left)
@@ -194,11 +225,39 @@ void IntervalTree::rightrotate(node *currentnode)
          {
                   currentnode->left=Tnode->right;
                   Tnode->right->parent=currentnode;
+                  
+                  //--------
+                  if(Tnode->right->max>Tnode->max)
+                  {if(Tnode->left!=NULL)
+                  Tnode->max=(Tnode->I->high>Tnode->left->max)?Tnode->I->high:Tnode->left->max;
+				  else
+				  Tnode->max=Tnode->I->high;
+				  }
+                    //------------  
          }
          else
+               {
                  currentnode->left=NULL;
+                 //-------------
+				  if(Tnode->max>currentnode->max){
+				  	if(currentnode->right!=NULL)
+				  	currentnode->max=(currentnode->I->high>currentnode->right->max)?currentnode->I->high:currentnode->right->max;
+				  	else
+				  	currentnode->max=currentnode->I->high;
+				  }
+				  //------
+				 
+				 }
          if(currentnode->parent!=NULL)
+                 {
                  Tnode->parent=currentnode->parent;
+				 //-----
+				if(Tnode->max>currentnode->max){
+					if(Tnode->max>currentnode->parent->max)
+					currentnode->parent->max=Tnode->max;
+				}
+				//----
+				}
          if(currentnode->parent==NULL)
                root=Tnode;
          else
@@ -267,7 +326,10 @@ void IntervalTree::search(node *nnode,interval *searchI){
 	}
 }
 
+
 //------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------
 int main(){
 	IntervalTree IT;
 	
@@ -290,5 +352,6 @@ int main(){
 	IT.search(IT.root,i2);
 	IT.search(IT.root,i3);
 	IT.search(IT.root,i4);
+	
 	return 0;
 }
