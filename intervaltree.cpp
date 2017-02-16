@@ -559,7 +559,7 @@ int main(){
 	//--------------------
 	 while(true)
     {
-        cout<<"Enter: \n1..Test Sample data set of problem \n Check randomly \n2..insert node\n3.search node \n4.delete \n5..print the interval tree\n6..exit\n";
+        cout<<"Enter: \n1..Test Sample data set of problem \n Check randomly \n2..insert node\n3.search node \n4.delete (sorry code is incorrect) \n5..print the interval tree\n6..exit\n";
         int option; 
 		cin>>option;
         if(option==1)
