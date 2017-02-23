@@ -1,12 +1,13 @@
 #include <iostream>
 
 using namespace std;
-class CircularList{
-    struct node{
+struct node{
         node *link;
         int data;
         
     };
+class CircularList{
+    
     public:
     node *head,*last;
     CircularList(){
@@ -42,51 +43,42 @@ class CircularList{
 };
 
 
-int longestIS(CircularList C){
-    
-    int n=N-1;
-    int *A=new int[n];
-    for(int i=0;i<n;i++)
-    A[i]=Array[i+1]-Array[i];
-    
+int longestIS(CircularList CList,int n){
+    int overall_max=0;
+    node* start=CList.head;
+    for(int k=0;k<n;k++){
+    //----
     int *C=new int[n];
     for(int i=0;i<n;i++)
     C[i]=1;
-    int max_index=0;
+    int max=0;
+    node *q=start->link;
     for(int i=1;i<n;i++){
+        node *p=start;
         for(int j=0;j<i;j++){
-            if(A[j]*A[i]<0){
+            if(p->data<q->data){
                 if(C[j]+1>C[i])
                 C[i]=C[j]+1;
             }
+             p=p->link;
+            max=(max>C[i])?max:C[i];
         }
-        max_index=(C[max_index]>C[i])?max_index:i;
-        
+        q=q->link;
     }
-    int previous_number;
-    
-  
-    
-    return C[max_index]+1;
+    //----
+    start=start->link;
+    overall_max=(overall_max>max)?overall_max:max;
+    }
+    return overall_max;
     
     
 }
-int main()
-{
-   int N;
-   cout<<"enter N"<<endl;
-   cin>>N;
-   int Array[N];
-   for(int i=0;i<N;i++)
-   cin>>Array[i];
-   int legth_longestZigzag= longestZigZag(Array,N);
-   cout<<"Length of zigzag sequence is:"<<legth_longestZigzag<<endl;
-   
-   return 0;
-}
-*/
-//------------
+
 int main(){
+    int T;
+    cin>>T;
+    int list[T];
+    for(int k=0;k<T;k++){
     int N;
     cin>>N;
     CircularList C;
@@ -95,7 +87,9 @@ int main(){
         cin>>a;
         C.insert(a);
     }
-    C.display();
+    list[k]=longestIS( C,N);
+    }
+    for(int k=0;k<T;k++)
+    cout<<list[k]<<endl;
+    return 0;
 }
-
-
