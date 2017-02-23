@@ -62,8 +62,10 @@ class AvoidRoads{
         cout<<"Enter number of bad road block"<<endl;
         cin>>badNum;
         for(int i=0;i<badNum;i++){
-            string s;
-            getline(cin,s);
+            int x1,y1,x2,y2;
+            cin>>x1>>y1>>x2>>y2;
+            string s=change_to_string( x1, y1,x2,y2);
+            
             Badroad.insert(s); 
         }
     }
@@ -74,7 +76,7 @@ class AvoidRoads{
     Result = convert.str();
      return Result;
    }
-    long long checkpoint(int i,int j){
+     void checkpoint(int i,int j){
     if((i<=width)&&(j<=height)){
       string A1= change_to_string(i,j,i+1,j) ;
       string A2= change_to_string(i+1,j,i,j) ;
@@ -86,17 +88,19 @@ class AvoidRoads{
       int first_count,second_count;
       if(a&&(i+1<=height)){
           fork++;
-          first_count=checkpoint(i+1,j);
+          checkpoint(i+1,j);
       }
       if(b&&(j+1<=width)){
           if(fork==1)
           count++;
-          second_count=checkpoint(i,j+1);
+          checkpoint(i,j+1);
       }
-      return count;
+     
       
     }
-    else
+    
+}
+long long ReturnCount(){
     return count;
 }
 
@@ -104,7 +108,9 @@ class AvoidRoads{
 
 int main(){
     AvoidRoads A;
-    long max_Road=A.checkpoint(0,0);
+    A.checkpoint(0,0);
+    long long max_Road=A.ReturnCount();
+    
     cout<<max_Road<<endl;
     return 0;
 }
