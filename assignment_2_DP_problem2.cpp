@@ -153,7 +153,7 @@ if(i<height && j<width){
 	}
 }
 
-return T[0][0];
+return T[0][0];  // max distinct road to reach
 }
 
 
