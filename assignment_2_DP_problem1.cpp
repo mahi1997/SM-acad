@@ -23,19 +23,7 @@ int longestZigZag(int *Array,int N){
         
     }
     int previous_number;
-    
-   /* cout<<"Longest zigzag sequence is :";
-    for(int i=0;i<= max_index;i++){
-        if(A[i]*A[max_index]<0){
-                if(C[i]+1>C[max_index])
-                {
-                    cout<<Array[i]<<" ";
-                    previous_number=Array[i+1];
-                }
-            }
-    }
-    cout<<previous_number<<endl;
-    */
+   
     return C[max_index]+1;
     
     
