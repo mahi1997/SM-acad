@@ -32,7 +32,7 @@ class Bad{
             last=last->link;
             
         }
-        cout<<"--inserted"<<last->data<<"."<<endl;
+        //cout<<"--inserted"<<last->data<<"."<<endl;
     }
     bool checkBad(string s1,string s2){
         node *p=first;
@@ -41,7 +41,7 @@ class Bad{
             if((p->data==s1)||(p->data==s2))
             {
                 b=false;
-                cout<<"equal"<<endl;
+                //cout<<"equal"<<endl;
                 break;
                 
             }
