@@ -39,7 +39,7 @@ class Bad{
         bool b=true;
         while(p){
             if((p->data==s1)||(p->data==s2))
-            {
+            {  //found in bad road so we can not travel it so b=false
                 b=false;
                 //cout<<"equal"<<endl;
                 break;
